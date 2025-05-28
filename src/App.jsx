@@ -4,6 +4,7 @@ import Cart from "./components/Cart";
 import Invoice from "./components/Invoice";
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+import Swal from 'sweetalert2'
 import './App.css'
 
 function App() {
@@ -40,13 +41,37 @@ function App() {
         ttl_price: (parseInt(result[0]?.qty) + 1)*product.price
       }
       setCart((prev) => [...prev, update_data]);
+      Swal.fire({
+        title: "Produk berhasil ditambahkan!",
+        icon: "success",
+        draggable: true
+      });
+
     } else {
       setCart((prev) => [...prev, res_product]);
+      Swal.fire({
+        title: "Produk berhasil ditambahkan!",
+        icon: "success",
+        draggable: true
+      });
     }
   };
 
   const removeFromCart = (index) => {
-    setCart((prev) => prev.filter((_, i) => i !== index));
+    Swal.fire({
+      title: "Apakah anda yakin ingin menghapus data ini?",
+      showCancelButton: true,
+      confirmButtonText: "Hapus",
+      cancelButtonText: `Batal`
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        setCart((prev) => prev.filter((_, i) => i !== index));
+        Swal.fire("Berhasil!", "", "success");
+      } else if (result.isDenied) {
+        Swal.fire("Gagal!", "", "info");
+      }
+    });
   };
 
   const handlePrintInvoice = () => {
